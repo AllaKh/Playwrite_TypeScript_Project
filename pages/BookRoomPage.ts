@@ -1,4 +1,4 @@
-import { Page, Locator } from '@playwright/test';
+import { Page } from '@playwright/test';
 
 export class BookRoomPage {
 constructor(public page: Page) {}
@@ -21,16 +21,29 @@ constructor(public page: Page) {}
     await this.checkout.fill(end);
   }
 
-  async clickReserve() { await this.reserveButton.click(); }
+  async clickReserve() {
+    await this.reserveButton.waitFor({ state: 'visible' });
+    await this.reserveButton.click();
+  }
 
-  async fillCredentials(data: any) {
+  async fillCredentials(data: { firstname: string; lastname: string; email: string; phone: string; depositpaid: boolean }) {
     await this.firstname.fill(data.firstname);
     await this.lastname.fill(data.lastname);
     await this.email.fill(data.email);
     await this.phone.fill(data.phone);
-    if (data.depositpaid) await this.deposit.check();
-    else await this.deposit.uncheck();
+
+    const isChecked = await this.deposit.isChecked();
+    if (data.depositpaid !== isChecked) {
+      if (data.depositpaid) {
+        await this.deposit.check();
+      } else {
+        await this.deposit.uncheck();
+      }
+    }
   }
 
-  async submitBooking() { await this.submitButton.click(); }
+  async submitBooking() {
+    await this.submitButton.waitFor({ state: 'visible' });
+    await this.submitButton.click();
+  }
 }

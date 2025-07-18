@@ -12,7 +12,7 @@ test.describe('Failed admin login with missing or wrong password', () => {
       const login = new LoginPage(page);
 
       // Given I am on the homepage
-      await home.goto();
+      await home.open();
 
       // Wait for Admin link to be visible
       await home.adminLink.waitFor({ state: 'visible' });

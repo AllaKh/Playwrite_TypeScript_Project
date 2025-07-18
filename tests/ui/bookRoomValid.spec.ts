@@ -15,7 +15,7 @@ test('Book a double room with valid data', async ({ page }) => {
   const data = bookingData.validJohn;
 
   // Given I am on the homepage
-  await home.goto();
+  await home.open();
 
   // Wait for Admin link to be visible
   await home.adminLink.waitFor({ state: 'visible' });

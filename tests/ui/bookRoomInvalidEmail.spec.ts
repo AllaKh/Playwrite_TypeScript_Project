@@ -19,7 +19,7 @@ test.describe('Create booking with missing or invalid email', () => {
       const data = bookingData.validJane;
 
       // Given I am on the homepage
-      await home.goto();
+      await home.open();
 
       // Wait for Our Rooms section to be visible
       await home.roomsHeading.waitFor({ state: 'visible' });

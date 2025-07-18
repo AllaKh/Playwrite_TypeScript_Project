@@ -12,7 +12,7 @@ test('Add a new valid room type', async ({ page }) => {
   const add = new AddRoomPage(page);
 
   // Given I am on the homepage
-  await home.goto();
+  await home.open();
 
   // And I click on the Admin link
   await home.clickAdminLink();

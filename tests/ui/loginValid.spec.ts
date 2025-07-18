@@ -10,10 +10,10 @@ test('Successful admin login/logout and links validation', async ({ page }) => {
   const admin = new AdminPage(page);
 
   // Given I am on the homepage
-  await home.goto();
+  await home.open();
 
   // And I click on the Admin link
-  await home.adminLink.waitFor({ state: 'visible', timeout: 10000 });
+  await expect(home.adminLink).toBeVisible({ timeout: 10000 });
   await home.clickAdminLink();
 
   // Then I should be on /admin (login page)
@@ -23,12 +23,10 @@ test('Successful admin login/logout and links validation', async ({ page }) => {
   await login.login(config.auth.username, config.auth.password);
 
   // Then I should be redirected to the admin dashboard (logout button visible)
-  await admin.logoutButton.waitFor({ state: 'visible', timeout: 10000 });
-  await expect(admin.logoutButton).toBeVisible();
+  await expect(admin.logoutButton).toBeVisible({ timeout: 10000 });
 
   // And I should see the Report link
-  await admin.reportLink.waitFor({ state: 'visible', timeout: 10000 });
-  await expect(admin.reportLink).toBeVisible();
+  await expect(admin.reportLink).toBeVisible({ timeout: 10000 });
 
   // When I click on the Report link
   await admin.clickReport();
@@ -72,14 +70,14 @@ test('Successful admin login/logout and links validation', async ({ page }) => {
     await page.waitForURL(/\/admin/, { timeout: 10000 });
 
     // When I click on Logout link
-    await admin.logoutButton.waitFor({ state: 'visible', timeout: 10000 });
+    await expect(admin.logoutButton).toBeVisible({ timeout: 10000 });
     await admin.logoutButton.click();
 
     // Then I should be redirected to the homepage
     await page.waitForURL(/\/$/, { timeout: 10000 });
 
     // When I click on the Admin link again
-    await home.adminLink.waitFor({ state: 'visible', timeout: 10000 });
+    await expect(home.adminLink).toBeVisible({ timeout: 10000 });
     await home.clickAdminLink();
 
     // Then I should be redirected to the Login page
