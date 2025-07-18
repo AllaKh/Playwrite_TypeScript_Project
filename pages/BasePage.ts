@@ -16,6 +16,11 @@ constructor(page: Page) {
   }
 
   async scrollToElement(locator: Locator): Promise<void> {
-    await locator.scrollIntoViewIfNeeded();
+    const elementHandle = await locator.elementHandle();
+    if (elementHandle) {
+      await this.page.evaluate((el) => {
+        el.scrollIntoView({ behavior: 'auto', block: 'center', inline: 'center' });
+      }, elementHandle);
+    }
   }
 }

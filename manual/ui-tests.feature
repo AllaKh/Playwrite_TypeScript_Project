@@ -18,6 +18,7 @@ Feature: Web UI Manual Tests
     Then I should be redirected to the Branding page with B&B details
     When I clik on the Messages link
     Then I should be redirected to the Messages page with messages table
+    And number of messages in the Navigation bar should be the same as actual number of messages
     When I click on <home page link>
     Then I should be redirected to the homepage
     When I click on the Admin link
@@ -56,26 +57,28 @@ Feature: Web UI Manual Tests
       | \x00                      |
       | 0xFFFFFFFF                |
 
-  Scenario: Book a suite room with valid data
+  Scenario: Book a double room with valid data
     Given I am on the homepage
     And I click on the Admin link
     And I enter username "admin" and password "password"
     And I click the login button
     And I click on Restful Booker Platform Demo link
     And I scroll down to Our Rooms section
-    When I click on Book now button in Suite room section
-    Then I should be redirected to the Suite room booking page
-    When I select available dates in the Book This Room section
+    When I click on Book now button in the "Double" room section
+    Then I should be redirected to the "Double" room booking page
+    When I select available dates in the Book This Room modal
     And I click on Reserve now button
     Then The credentials form modal should appear
-    When I fill the credentials form with valid data
+    When I fill the credentials form with the valid data
     And I submit the form
-    Then I should see a booking confirmation modal
+    Then I should see the booking confirmation modal
     When I click on Return home button
     Then I should be redirected to the home page
     When I click on the Admin link
     And I clcik on the Report link
-    Then I should see my booking in the appropriate date
+    Then I should see my booking for the appropriate date in the calendar table
+    When I click on my booking record
+    Then I should see my booking details
     When I clcik on the Messages link
     Then I should be redirected to the Messages page
     And I should see message with my username and subject

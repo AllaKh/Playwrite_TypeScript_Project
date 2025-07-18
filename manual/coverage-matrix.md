@@ -24,30 +24,36 @@
 | 20 | API  | Update room type fields validation         | Negative  | ❌        | To Be Automate  | BUG-001    |
 | 21 | API  | Delete room type (by room ID)              | Positive  | ❌        | Automated       | BUG-001    |
 | 22 | API  | Partial update room type                   | Positive  | ❌        | Manual          | BUG-001    |
-| 23 | UI   | Admin login/logout success                 | Positive  | ✅        | Automated       |            |
-| 24 | UI   | Admin login validation                     | Negative  | ✅        | Automated       |            |
+| 23 | UI   | Admin login/logout success                 | Positive  | ❌        | Automated       | BUG-003    |
+| 24 | UI   | Admin login validation                     | Negative  | ✅        | To Be Automated |            |
 | 25 | UI   | Book a double room (valid data)            | Positive  | ✅        | To Be Automated |            |
 | 26 | UI   | Book a single room (valid data)            | Positive  | ✅        | To Be Automated |            |
 | 27 | UI   | Book a suite  room (valid data)            | Positive  | ❌        | Automated       | BUG-002    |
 | 28 | UI   | Book a room fields validation              | Negative  | ✅        | To Be Automated |            |
 | 29 | UI   | Book a room without admin                  | Positive  | ✅        | Manual          |            |
 | 30 | UI   | Cancelling the booking process             | Negative  | ✅        | Manual          |            |
-| 29 | UI   | Attempt to booking for an unavailable date | Negative  | ❌        | To Be Automated | BUG-003    |
+| 29 | UI   | Attempt to booking for an unavailable date | Negative  | ❌        | To Be Automated | BUG-004    |
 | 31 | UI   | Update the booking (valid)                 | Positive  | ❌        | To Be Automated | N/A        |
 | 32 | UI   | Cancelling the update                      | Negative  | ❌        | Manual          | N/A        |
 | 33 | UI   | Update a non-existing booking              | Negative  | ❌        | Manual          | N/A        |
 | 34 | UI   | Delete the booking (valid)                 | Positive  | ❌        | To Be Automated | N/A        |
 | 35 | UI   | Cancelling the delete                      | Negative  | ❌        | Manual          | N/A        |
 | 36 | UI   | Delete a non-existing booking              | Negative  | ❌        | Manual          | N/A        |
-| 37 | UI   | Links navigation                           | Positive  | ❌        | To Be Automated | BUG-004    |
-| 38 | UI   | Create new room type with Accessible=true  | Positive  | ❌        | Automated       | BUG-005    |
-| 39 | UI   | Create new room type with Accessible=false | Negative  | ✅        | Manual          |            |
-| 40 | UI   | Create new room type fields validation     | Negative  | ✅        | To Be Automated |            |
-| 41 | UI   | Edit room type                             | Positive  | ❌        | To Be Automated | BUG-006    |
-| 42 | UI   | Edit room type fields validation           | Negative  | ❌        | To Be Automated | BUG-007    |
-| 43 | UI   | Delete room type                           | Positive  | ✅        | To Be Automated |            |
-| 44 | UI   | Contact Us send form                       | Positive  | ✅        | Manual          |            |
-| 45 | UI   | Contact Us fields validation               | Negative  | ✅        | Manual          |            |
+| 37 | UI   | Book a double room via admin Report page   | Positive  | ✅        | To Be Automated |            |
+| 38 | UI   | Book a single room via admin Report page   | Positive  | ✅        | Manual          |            |
+| 39 | UI   | Book a suite  room via admin Report page   | Positive  | ✅        | Manual          |            |
+| 40 | UI   | Book via admin Report page validation      | Negative  | ✅        | Manual          |            |
+| 41 | UI   | Links navigation                           | Positive  | ❌        | To Be Automated | BUG-006    |
+| 42 | UI   | Create new room type with Accessible=true  | Positive  | ❌        | Automated       | BUG-005    |
+| 43 | UI   | Create new room type with Accessible=false | Negative  | ✅        | Manual          |            |
+| 44 | UI   | Create new room type fields validation     | Negative  | ✅        | To Be Automated |            |
+| 45 | UI   | Edit room type                             | Positive  | ❌        | To Be Automated | BUG-007    |
+| 46 | UI   | Edit room type fields validation           | Negative  | ❌        | To Be Automated | BUG-008    |
+| 47 | UI   | Delete room type                           | Positive  | ✅        | To Be Automated |            |
+| 48 | UI   | Contact Us send form                       | Positive  | ✅        | Manual          |            |
+| 49 | UI   | Contact Us fields validation               | Negative  | ✅        | Manual          |            |
+| 50 | UI   | B&B details aditing                        | Positive  | ✅        | Manual          |            |
+| 51 | UI   | B&B details fields validation              | Negative  | ✅        | Manual          |            |
 ---
 
 ## Strategy Summary
