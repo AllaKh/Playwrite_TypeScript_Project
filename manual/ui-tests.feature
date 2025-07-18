@@ -6,7 +6,7 @@ Feature: Web UI Manual Tests
     When I enter username "admin" and password "password"
     And I click the login button
     Then I should be redirected to the admin dashboard
-    When I clcik on the Report link
+    When I click  on the Report link
     Then I should be redirected to the Report page with calendar
     When I click on the Next link
     Then I should be redirected to the next month page
@@ -14,8 +14,10 @@ Feature: Web UI Manual Tests
     Then I should be redirected to the current month page
     When I click on the Back link
     Then I should be redirected to the previous month page
-    When I clcik on the Branding link
+    When I clik on the Branding link
     Then I should be redirected to the Branding page with B&B details
+    When I clik on the Messages link
+    Then I should be redirected to the Messages page with messages table
     When I click on <home page link>
     Then I should be redirected to the homepage
     When I click on the Admin link

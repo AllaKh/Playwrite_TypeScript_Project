@@ -1,33 +1,28 @@
 import { test, expect } from '@playwright/test';
-import { HomePage } from '../../pages/HomePage.js';
-import { LoginPage } from '../../pages/LoginPage.js';
-import { config } from '../config.js';
+import { HomePage } from '../../pages/HomePage';
+import { LoginPage } from '../../pages/LoginPage';
+import { config } from '../config';
 
 test.describe('Failed admin login with missing or wrong password', () => {
   const passwords = ['', 'wrongpassword'];
 
   for (const password of passwords) {
     test(`Login attempt with password "${password === '' ? '[blank]' : password}"`, async ({ page }) => {
-      const home = new HomePage(page);
-      const login = new LoginPage(page);
+      const homePage = new HomePage(page);
+      const loginPage = new LoginPage(page);
 
       // Given I am on the homepage
-      await home.open();
+      await homePage.navigateToHome();
 
-      // Wait for Admin link to be visible
-      await home.adminLink.waitFor({ state: 'visible' });
+      // And I click on the Admin link to go to login page
+      await homePage.clickAdminLink();
 
-      // When I click on the Admin link
-      await home.clickAdminLink();
-
-      // Wait for username input to appear
-      await login.usernameInput.waitFor({ state: 'visible' });
-
-      // When I enter username and password
-      await login.login(config.auth.username, password);
+      // When I enter username and password to log in
+      await loginPage.login(config.auth.username, password);
 
       // Then I should see an error message
-      await expect(login.loginError).toBeVisible();
+      const loginError = page.locator('#root-container > div > div > div > div > div.col-sm-8 > div > div.card-body > div');
+      await expect(loginError).toBeVisible(); // Verifying the visibility of the error message
     });
   }
 });

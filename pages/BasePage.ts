@@ -1,13 +1,21 @@
-import { Page } from '@playwright/test';
+import { Page, Locator, expect } from '@playwright/test';
 
 export class BasePage {
-readonly page: Page;
+protected page: Page;
 
 constructor(page: Page) {
     this.page = page;
   }
 
-  async goto(path = '/') {
-    await this.page.goto(path);
+  async navigate(url: string): Promise<void> {
+    await this.page.goto(url);
+  }
+
+  async isVisible(locator: Locator): Promise<boolean> {
+    return await locator.isVisible();
+  }
+
+  async scrollToElement(locator: Locator): Promise<void> {
+    await locator.scrollIntoViewIfNeeded();
   }
 }

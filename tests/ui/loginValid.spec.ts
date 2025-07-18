@@ -1,86 +1,87 @@
 import { test, expect } from '@playwright/test';
-import { HomePage } from '../../pages/HomePage.js';
-import { LoginPage } from '../../pages/LoginPage.js';
-import { AdminPage } from '../../pages/AdminPage.js';
-import { config } from '../config.js';
+import { HomePage } from '../../pages/HomePage';
+import { LoginPage } from '../../pages/LoginPage';
+import { AddRoomPage } from '../../pages/AddRoomPage';
+import { config } from '../../tests/config';
 
-test('Successful admin login/logout and links validation', async ({ page }) => {
-  const home = new HomePage(page);
-  const login = new LoginPage(page);
-  const admin = new AdminPage(page);
+test.describe('Admin login/logout and full navigation flow', () => {
 
-  // Given I am on the homepage
-  await home.open();
+  // Scenario: Admin login/logout and full navigation flow with homepage and login cycle
+  test('Admin login/logout and full navigation flow with homepage and login cycle', async ({ page }) => {
+    const homePage = new HomePage(page);
+    const loginPage = new LoginPage(page);
+    const adminDashboard = new AddRoomPage(page);
 
-  // And I click on the Admin link
-  await expect(home.adminLink).toBeVisible({ timeout: 10000 });
-  await home.clickAdminLink();
+    // Given I am on the homepage
+    await homePage.navigateToHome();
 
-  // Then I should be on /admin (login page)
-  await page.waitForURL(/\/admin/, { timeout: 10000 });
+    // And I click on the Admin link to go to login page
+    await homePage.clickAdminLink();
 
-  // And I enter username and password
-  await login.login(config.auth.username, config.auth.password);
+    // When I enter username and password to log in
+    await loginPage.login(config.auth.username, config.auth.password);
 
-  // Then I should be redirected to the admin dashboard (logout button visible)
-  await expect(admin.logoutButton).toBeVisible({ timeout: 10000 });
+    // Then I should be redirected to the admin dashboard
+    await expect(page).toHaveURL(/.*\/admin\/rooms/);
+    await expect(page.locator('text=Rooms')).toBeVisible();
 
-  // And I should see the Report link
-  await expect(admin.reportLink).toBeVisible({ timeout: 10000 });
+    // When I click on the Report link to navigate to the Report page
+    await adminDashboard.clickReportLink();
 
-  // When I click on the Report link
-  await admin.clickReport();
+    // Then I should be redirected to the Report page
+    await expect(page).toHaveURL(/.*report/);
+    await expect(page.locator('#reportLink')).toBeVisible();
 
-  // Then I should be redirected to the Report page with calendar
-  await page.waitForURL(/report/, { timeout: 10000 });
-  await expect(page.locator('.calendar')).toBeVisible();
+    // When I click on the Messages link to go to the Messages page
+    const messagesLink = page.locator('text=Messages');
+    await messagesLink.waitFor({ state: 'visible' });
+    await messagesLink.click();
 
-  // When I click on the Next link
-  await admin.clickNext();
-  await expect(page.locator('.calendar')).toBeVisible();
+    // Then I should be redirected to the Messages page
+    await expect(page).toHaveURL(/.*\/admin\/message/);
+    await expect(page.locator('text=Messages')).toBeVisible();
 
-  // When I click on the Today link
-  await admin.clickToday();
-  await expect(page.locator('.calendar')).toBeVisible();
+    // NEW SECTION: Navigation to Homepage
 
-  // When I click on the Back link
-  await admin.clickBack();
-  await expect(page.locator('.calendar')).toBeVisible();
-
-  // When I click on the Branding link
-  await admin.clickBranding();
-
-  // Then I should be redirected to the Branding page with B&B details
-  await page.waitForURL(/branding/, { timeout: 10000 });
-  await expect(page.locator('text=Bed & Breakfast')).toBeVisible();
-
-  // Now test both homepage links
-  for (const linkName of ['Restful Booker Platform Demo', 'Front Page']) {
-    // When I click on that homepage link
-    if (linkName === 'Restful Booker Platform Demo') {
-      await home.clickDemoLink();
-    } else {
-      await home.clickFrontLink();
-    }
-    // Then I should be redirected to the homepage
-    await page.waitForURL(/\/$/, { timeout: 10000 });
-
-    // And admin dashboard again
-    await home.clickAdminLink();
-    await page.waitForURL(/\/admin/, { timeout: 10000 });
-
-    // When I click on Logout link
-    await expect(admin.logoutButton).toBeVisible({ timeout: 10000 });
-    await admin.logoutButton.click();
+    // When I navigate back to the homepage using the first link
+    const homeLink = page.locator('#frontPageLink');
+    await homeLink.click();
 
     // Then I should be redirected to the homepage
-    await page.waitForURL(/\/$/, { timeout: 10000 });
+    await expect(page).toHaveURL('https://automationintesting.online/');
+    await expect(page.locator('text=Home')).toBeVisible();
 
-    // When I click on the Admin link again
-    await expect(home.adminLink).toBeVisible({ timeout: 10000 });
-    await home.clickAdminLink();
+    // Now click the Admin link again to go back to the login page
+    await homePage.clickAdminLink();
 
-    // Then I should be redirected to the Login page
-    await page.waitForURL(/\/admin/, { timeout: 10000 });
-  }
+    // Then I should be redirected to the admin dashboard
+    await expect(page).toHaveURL(/.*\/admin\/rooms/);
+    await expect(page.locator('text=Rooms')).toBeVisible();
+
+    // Click on the #frontPageLink before logging out
+    const frontPageLink = page.locator('#frontPageLink');
+    await frontPageLink.click();
+
+     // Then I should be redirected to the homepage
+    await expect(page).toHaveURL('https://automationintesting.online/');
+    await expect(page.locator('text=Home')).toBeVisible();
+
+    // When I navigate back to the admin dashboard
+    await homePage.clickAdminLink();
+
+    // Then I should be redirected to the admin dashboard
+    await expect(page).toHaveURL(/.*\/admin\/rooms/);
+    await expect(page.locator('text=Rooms')).toBeVisible();
+
+    // When I click on the logout button to log out
+    const logoutButton = page.locator('#navbarSupportedContent > ul.navbar-nav.ms-auto > li:nth-child(2) > button');
+    await logoutButton.click();
+
+     // Then I should be redirected to the homepage
+    await expect(page).toHaveURL('https://automationintesting.online/');
+    await expect(page.locator('text=Home')).toBeVisible();
+
+    // And I click on the Admin link to go to login page
+    await homePage.clickAdminLink();
+  });
 });

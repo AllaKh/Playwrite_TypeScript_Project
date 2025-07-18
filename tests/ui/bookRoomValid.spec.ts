@@ -15,7 +15,7 @@ test('Book a double room with valid data', async ({ page }) => {
   const data = bookingData.validJohn;
 
   // Given I am on the homepage
-  await home.open();
+  await home.navigateToHome();
 
   // Wait for Admin link to be visible
   await home.adminLink.waitFor({ state: 'visible' });
@@ -23,40 +23,55 @@ test('Book a double room with valid data', async ({ page }) => {
   // And I click on the Admin link
   await home.clickAdminLink();
 
-  // Wait for username input to appear on login page
-  await login.usernameInput.waitFor({ state: 'visible' });
-
-  // And I enter username and password
+  // When I enter username and password to log in
   await login.login(config.auth.username, config.auth.password);
 
-  // Wait for Restful Booker Platform Demo link to be visible
-  await home.demoLink.waitFor({ state: 'visible' });
+  // Click on the #frontPageLink before logging out
+  const frontPageLink = page.locator('#frontPageLink');
+  await frontPageLink.click();
 
-  // And I click on Restful Booker Platform Demo link
-  await home.clickDemoLink();
+  // Then I should be redirected to the homepage
+  await expect(page).toHaveURL('https://automationintesting.online/');
+  await expect(page.locator('text=Home')).toBeVisible();
 
-  // Wait for Our Rooms section to be visible
-  await home.roomsHeading.waitFor({ state: 'visible' });
+  // Find "Our Rooms" section and scroll down to it explicitly
+  const roomsHeading = page.locator("#rooms > div > div.text-center.mb-5 > h2");
 
-  // And I scroll down to Our Rooms section
-  await home.scrollToOurRooms();
+  // Scroll explicitly to the element
+  await scrollToElement(page, roomsHeading);
 
-  // When I click on Book now button in Double room section
-  await home.clickBookNow('Double');
+  // Wait for the element to be visible after scroll
+  await roomsHeading.waitFor({ state: 'visible', timeout: 5000 });
+  await expect(roomsHeading).toBeVisible();
 
-  // Then I should be redirected to the Double room booking page
+  // Click on Double Room
+  const doubleRoom = page.locator("#rooms > div > div.row.g-4 > div:nth-child(2) > div > div.card-body > h5");
+  await doubleRoom.click();
+
+  // Wait for Double Room page to load
+  const doubleRoomTitle = page.locator("#root-container > div > div.container.my-5 > div > div.col-lg-8.mb-4.mb-lg-0 > div:nth-child(1) > h1");
+
+  // Wait for the element to be visible
+  await doubleRoomTitle.waitFor({ state: 'visible', timeout: 10000 });
+
+  // Now, find and click the "Book This Room" button
+  const bookThisRoomButton = page.locator("#root-container > div > div.container.my-5 > div > div.col-lg-4 > div > div > h2");
+  await bookThisRoomButton.click();
+
+  // Wait for the reservation form to be visible
+  const reservationForm = page.locator("#doReservation");
+  await reservationForm.waitFor({ state: 'visible' });
+
+  // Click on the reservation form button
+  await reservationForm.click();
+
+  // Then I should be redirected to the reservation page
   await expect(page).toHaveURL(/\/book/);
 
-  // When I select available dates
+  // Continue with booking process as usual
   await book.selectDates(data.bookingdates.checkin, data.bookingdates.checkout);
-
-  // And I click on Reserve now button
   await book.clickReserveNow();
-
-  // Then The credentials form should appear
   await expect(book.credentialsForm).toBeVisible();
-
-  // When I fill the credentials form with valid data
   await book.fillCredentials({
     firstname: data.firstname,
     lastname: data.lastname,
@@ -64,12 +79,8 @@ test('Book a double room with valid data', async ({ page }) => {
     phone: data.phone,
     depositpaid: data.depositpaid,
   });
-
-  // And I submit the form
-  await book.submit();
-
-  // Then I should see a booking confirmation modal
-  await expect(book.bookingConfirmationModal).toBeVisible();
+  await book.submitBooking();
+  await expect(book.bookingConfirmation).toBeVisible();
 
   // Wait for Admin link to be visible again
   await home.adminLink.waitFor({ state: 'visible' });
@@ -111,3 +122,31 @@ test('Book a double room with valid data', async ({ page }) => {
   await expect(admin.messageDetails).toBeHidden();
   await expect(admin.messageList.locator('.read')).toContainText(data.firstname);
 });
+
+// Function to scroll to the target element
+async function scrollToElement(page, element) {
+  // Find scrollable elements on the page
+  const scrollableElements = await page.evaluate(() => {
+    let scrollableElements = [];
+    document.querySelectorAll('*').forEach((el) => {
+      const style = window.getComputedStyle(el);
+      if (el.scrollHeight > el.clientHeight && (style.overflow === 'auto' || style.overflow === 'scroll')) {
+        scrollableElements.push(el);
+      }
+    });
+    return scrollableElements;
+  });
+
+  console.log('Found scrollable elements:', scrollableElements.length);
+
+  // If there are scrollable elements, scroll the first one
+  if (scrollableElements.length > 0) {
+    const scrollElement = scrollableElements[0]; // Scroll the first found element
+    await page.evaluate((el) => {
+      el.scrollTop = el.scrollHeight;  // Scroll to the bottom of the element
+    }, scrollElement);
+  }
+
+  // Scroll to the specific target element
+  await element.scrollIntoViewIfNeeded();
+}

@@ -1,45 +1,36 @@
 import { Page } from '@playwright/test';
+import { BasePage } from './BasePage';
 
-export class AddRoomPage {
-constructor(public page: Page) {}
-
-  get roomNumber() { return this.page.locator('input[name="roomNumber"]'); }
-  get typeSelect() { return this.page.locator('select[name="type"]'); }
-  get accessibleSelect() { return this.page.locator('select[name="accessible"]'); }
-  get price() { return this.page.locator('input[name="price"]'); }
-  get wifi() { return this.page.getByLabel('wifi'); }
-  get tv() { return this.page.getByLabel('tv'); }
-  get views() { return this.page.getByLabel('views'); }
-  get createButton() { return this.page.getByRole('button', { name: 'Create' }); }
-  get roomsList() { return this.page.locator('.rooms-list'); }
-
-  async fillRoomNumber(num: string) {
-    await this.roomNumber.fill(num);
+export class AddRoomPage extends BasePage {
+constructor(page: Page) {
+    super(page);
   }
 
-  async selectType(type: string) {
-    await this.typeSelect.selectOption(type);
+  async clickReportLink(): Promise<void> {
+    await this.page.getByRole('link', { name: 'Report' }).click();
   }
 
-  async selectAccessible(val: boolean) {
-    await this.accessibleSelect.selectOption(val ? 'true' : 'false');
+  async clickNextLink(): Promise<void> {
+    await this.page.getByRole('link', { name: 'Next' }).click();
   }
 
-  async fillPrice(val: string) {
-    await this.price.fill(val);
+  async clickTodayLink(): Promise<void> {
+    await this.page.getByRole('link', { name: 'Today' }).click();
   }
 
-  async toggleAmenities(amenities: string[]) {
-    for (const a of amenities) {
-      const checkbox = this.page.getByLabel(a);
-      if (!(await checkbox.isChecked())) {
-        await checkbox.check();
-      }
-    }
+  async clickBackLink(): Promise<void> {
+    await this.page.getByRole('link', { name: 'Back' }).click();
   }
 
-  async clickCreate() {
-    await this.createButton.waitFor({ state: 'visible' });
-    await this.createButton.click();
+  async clickBrandingLink(): Promise<void> {
+    await this.page.getByRole('link', { name: 'Branding' }).click();
+  }
+
+  async clickHomeLinkByText(linkText: string): Promise<void> {
+    await this.page.getByRole('link', { name: linkText }).click();
+  }
+
+  async clickLogout(): Promise<void> {
+    await this.page.getByRole('link', { name: 'Logout' }).click();
   }
 }
