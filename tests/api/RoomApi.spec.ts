@@ -1,11 +1,9 @@
 import { test, expect } from '@playwright/test';
-import { RoomApi, RoomPayload } from '../../pages/RoomApi';
-import { AuthApi } from '../../pages/AuthApi';
-import { BookingApi, BookingPayload } from '../../pages/BookingApi';
-import { credentials } from '../config';
-import bookingPayloads from '../../data/bookingPayloads.json';
-
-// Full Room API tests: Accessible true then false with booking logic
+import { RoomApi, RoomPayload } from '../../pages/RoomApi.js';
+import { AuthApi } from '../../pages/AuthApi.js';
+import { BookingApi, BookingPayload } from '../../pages/BookingApi.js';
+import bookingPayloads from '../../data/bookingPayloads.json' assert { type: 'json' };
+import { config } from '../config.js';
 
 test.describe('Room API Accessible Toggle and Booking Tests', () => {
   let roomApi: RoomApi;
@@ -27,13 +25,11 @@ test.describe('Room API Accessible Toggle and Booking Tests', () => {
 
   test.beforeAll(async ({ request }) => {
     authApi = new AuthApi(request);
-    roomApi = new RoomApi(request);
     bookingApi = new BookingApi(request);
-
-    const login = await authApi.login(credentials.username, credentials.password);
-    expect(login.status()).toBe(200);
+    const login = await authApi.login(config.auth.username, config.auth.password);
     token = (await login.json()).token;
   });
+
 
   test('Create room with accessible=true and book it', async () => {
     const createRoomResponse = await roomApi.createRoom(initialRoomPayload, token);

@@ -1,7 +1,8 @@
 import { test, expect } from '@playwright/test';
-import { BookingApi, BookingPayload } from '../../pages/BookingApi';
-import { AuthApi } from '../../pages/AuthApi';
-import bookingPayloads from '../../data/bookingPayloads.json';
+import { BookingApi, BookingPayload } from '../../pages/BookingApi.js';
+import { AuthApi } from '../../pages/AuthApi.js';
+import bookingPayloads from '../../data/bookingPayloads.json' assert { type: 'json' };
+import { config } from '../config.js';
 
 const payload: BookingPayload = bookingPayloads.validJohn;
 
@@ -13,7 +14,7 @@ test.describe('Booking API Tests', () => {
   test.beforeAll(async ({ request }) => {
     authApi = new AuthApi(request);
     bookingApi = new BookingApi(request);
-    const login = await authApi.login('admin', 'password');
+    const login = await authApi.login(config.auth.username, config.auth.password);
     token = (await login.json()).token;
   });
 

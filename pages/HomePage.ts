@@ -19,4 +19,8 @@ constructor(page: Page) {
   async clickAdminLink(): Promise<void> {
     await this.adminLink.click();
   }
+
+  async scrollToOurRoomsSection(): Promise<void> {
+    await this.page.locator('#rooms').scrollIntoViewIfNeeded();
+  }
 }

@@ -67,10 +67,12 @@ Feature: Web UI Manual Tests
     Then I should be redirected to the Suite room booking page
     When I select available dates in the Book This Room section
     And I click on Reserve now button
-    Then The credentials form should appear
+    Then The credentials form modal should appear
     When I fill the credentials form with valid data
     And I submit the form
     Then I should see a booking confirmation modal
+    When I click on Return home button
+    Then I should be redirected to the home page
     When I click on the Admin link
     And I clcik on the Report link
     Then I should see my booking in the appropriate date
@@ -78,7 +80,7 @@ Feature: Web UI Manual Tests
     Then I should be redirected to the Messages page
     And I should see message with my username and subject
     When I clcik on the message with my username and subject
-    Then I should be redirected to the message details page
+    Then the message details modal should appear with valid information
     When I clcik on the Close button
     Then the message details page must be closed and this message must appears as read
 

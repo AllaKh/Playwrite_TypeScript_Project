@@ -26,10 +26,10 @@ test.describe('Admin login/logout and full navigation flow', () => {
     await expect(page.locator('text=Rooms')).toBeVisible();
 
     // When I click on the Report link to navigate to the Report page
-    await adminDashboard.clickReportLink();
+    await page.locator('#reportLink').click();
 
     // Then I should be redirected to the Report page
-    await expect(page).toHaveURL(/.*report/);
+    await expect(page).toHaveURL(/.*\/admin\/report/);
     await expect(page.locator('#reportLink')).toBeVisible();
 
     // When I click on the Messages link to go to the Messages page
@@ -40,8 +40,6 @@ test.describe('Admin login/logout and full navigation flow', () => {
     // Then I should be redirected to the Messages page
     await expect(page).toHaveURL(/.*\/admin\/message/);
     await expect(page.locator('text=Messages')).toBeVisible();
-
-    // NEW SECTION: Navigation to Homepage
 
     // When I navigate back to the homepage using the first link
     const homeLink = page.locator('#frontPageLink');
@@ -58,7 +56,7 @@ test.describe('Admin login/logout and full navigation flow', () => {
     await expect(page).toHaveURL(/.*\/admin\/rooms/);
     await expect(page.locator('text=Rooms')).toBeVisible();
 
-    // Click on the #frontPageLink before logging out
+    // When I click on the #frontPageLink before logging out
     const frontPageLink = page.locator('#frontPageLink');
     await frontPageLink.click();
 

@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
-import { AuthApi } from '../../pages/AuthApi';
-import { credentials } from '../config';
+import { AuthApi } from '../../pages/AuthApi.js';
+import { config } from '../config.js';
 
 test.describe('Auth API Tests', () => {
   let authApi: AuthApi;

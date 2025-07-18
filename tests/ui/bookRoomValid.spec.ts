@@ -1,12 +1,5 @@
-import { test, expect } from '@playwright/test';
-import { HomePage } from '../../pages/HomePage.js';
-import { LoginPage } from '../../pages/LoginPage.js';
-import { AdminPage } from '../../pages/AdminPage.js';
-import { BookRoomPage } from '../../pages/BookRoomPage.js';
-import bookingData from '../../data/bookingPayloads.json' assert { type: 'json' };
-import { config } from '../config.js';
-
-test('Book a double room with valid data', async ({ page }) => {
+// Scenario: Book a suite room with valid data
+test('Book a suite room with valid data', async ({ page }) => {
   const home = new HomePage(page);
   const login = new LoginPage(page);
   const admin = new AdminPage(page);
@@ -16,62 +9,44 @@ test('Book a double room with valid data', async ({ page }) => {
 
   // Given I am on the homepage
   await home.navigateToHome();
-
-  // Wait for Admin link to be visible
   await home.adminLink.waitFor({ state: 'visible' });
 
   // And I click on the Admin link
   await home.clickAdminLink();
 
-  // When I enter username and password to log in
+  // And I enter username "admin" and password "password"
   await login.login(config.auth.username, config.auth.password);
 
-  // Click on the #frontPageLink before logging out
-  const frontPageLink = page.locator('#frontPageLink');
-  await frontPageLink.click();
+  // And I click the login button
+  await login.clickLoginButton();
 
-  // Then I should be redirected to the homepage
-  await expect(page).toHaveURL('https://automationintesting.online/');
-  await expect(page.locator('text=Home')).toBeVisible();
+  // And I click on Restful Booker Platform Demo link
+  const demoLink = page.locator('#frontPageLink');
+  await demoLink.click();
 
-  // Find "Our Rooms" section and scroll down to it explicitly
-  const roomsHeading = page.locator("#rooms > div > div.text-center.mb-5 > h2");
+  // And I scroll down to Our Rooms section
+#  const ourRoomsHeading = page.locator('#location > div > div.text-center.mb-5 > h2');
+#  await ourRoomsHeading.scrollIntoViewIfNeeded();
+  await expect(ourRoomsHeading).toBeVisible();
 
-  // Scroll explicitly to the element
-  await scrollToElement(page, roomsHeading);
+  // When I click on Book now button in Suite room section
+  const suiteRoom = page.locator('#rooms > div > div.row.g-4 > div:nth-child(3)');
+  await suiteRoom.getByText('Book now').click();
 
-  // Wait for the element to be visible after scroll
-  await roomsHeading.waitFor({ state: 'visible', timeout: 5000 });
-  await expect(roomsHeading).toBeVisible();
+  // Then I should be redirected to the Suite room booking page
+  const suiteHeading = page.locator('#root-container h1');
+  await expect(suiteHeading).toHaveText(/Suite/i);
 
-  // Click on Double Room
-  const doubleRoom = page.locator("#rooms > div > div.row.g-4 > div:nth-child(2) > div > div.card-body > h5");
-  await doubleRoom.click();
-
-  // Wait for Double Room page to load
-  const doubleRoomTitle = page.locator("#root-container > div > div.container.my-5 > div > div.col-lg-8.mb-4.mb-lg-0 > div:nth-child(1) > h1");
-
-  // Wait for the element to be visible
-  await doubleRoomTitle.waitFor({ state: 'visible', timeout: 10000 });
-
-  // Now, find and click the "Book This Room" button
-  const bookThisRoomButton = page.locator("#root-container > div > div.container.my-5 > div > div.col-lg-4 > div > div > h2");
-  await bookThisRoomButton.click();
-
-  // Wait for the reservation form to be visible
-  const reservationForm = page.locator("#doReservation");
-  await reservationForm.waitFor({ state: 'visible' });
-
-  // Click on the reservation form button
-  await reservationForm.click();
-
-  // Then I should be redirected to the reservation page
-  await expect(page).toHaveURL(/\/book/);
-
-  // Continue with booking process as usual
+  // When I select available dates in the Book This Room section
   await book.selectDates(data.bookingdates.checkin, data.bookingdates.checkout);
+
+  // And I click on Reserve now button
   await book.clickReserveNow();
+
+  // Then The credentials form modal should appear
   await expect(book.credentialsForm).toBeVisible();
+
+  // When I fill the credentials form with valid data
   await book.fillCredentials({
     firstname: data.firstname,
     lastname: data.lastname,
@@ -79,74 +54,52 @@ test('Book a double room with valid data', async ({ page }) => {
     phone: data.phone,
     depositpaid: data.depositpaid,
   });
+
+  // And I submit the form
   await book.submitBooking();
+
+  // Then I should see a booking confirmation modal
   await expect(book.bookingConfirmation).toBeVisible();
 
-  // Wait for Admin link to be visible again
-  await home.adminLink.waitFor({ state: 'visible' });
+  // When I click on Return home button
+  const returnHomeBtn = page.locator('#root-container > div > div.container.my-5 > div > div.col-lg-4 > div > div > a');
+  await returnHomeBtn.click();
+
+  // Then I should be redirected to the home page
+  await expect(page).toHaveURL('https://automationintesting.online/');
+  await expect(page.locator('text=Home')).toBeVisible();
 
   // When I click on the Admin link
+  await home.adminLink.waitFor({ state: 'visible' });
   await home.clickAdminLink();
 
-  // Wait for Report link to be visible
+  // And I clcik on the Report link
   await admin.reportLink.waitFor({ state: 'visible' });
-
-  // And I click on the Report link
   await admin.clickReport();
 
-  // Then I should see my booking in the report list
+  // Then I should see my booking in the appropriate date
   await expect(admin.bookingList).toContainText(data.firstname);
 
-  // Wait for Messages link to be visible
+  // When I clcik on the Messages link
   await admin.messagesLink.waitFor({ state: 'visible' });
-
-  // When I click on the Messages link
   await admin.clickMessages();
 
   // Then I should be redirected to the Messages page
   await expect(page).toHaveURL(/\/admin\/messages/);
 
-  // And I should see message with my username
+  // And I should see message with my username and subject
   await expect(admin.messageList).toContainText(data.firstname);
 
-  // When I click on the message with my username
+  // When I clcik on the message with my username and subject
   await admin.clickMessage(data.firstname);
 
-  // Then I should see message details
+  // Then the message details modal should appear with valid information
   await expect(admin.messageDetails).toBeVisible();
 
-  // When I click on the Close button
+  // When I clcik on the Close button
   await admin.closeMessageDetails();
 
-  // Then message details must be closed and message marked as read
+  // Then the message details page must be closed and this message must appears as read
   await expect(admin.messageDetails).toBeHidden();
   await expect(admin.messageList.locator('.read')).toContainText(data.firstname);
 });
-
-// Function to scroll to the target element
-async function scrollToElement(page, element) {
-  // Find scrollable elements on the page
-  const scrollableElements = await page.evaluate(() => {
-    let scrollableElements = [];
-    document.querySelectorAll('*').forEach((el) => {
-      const style = window.getComputedStyle(el);
-      if (el.scrollHeight > el.clientHeight && (style.overflow === 'auto' || style.overflow === 'scroll')) {
-        scrollableElements.push(el);
-      }
-    });
-    return scrollableElements;
-  });
-
-  console.log('Found scrollable elements:', scrollableElements.length);
-
-  // If there are scrollable elements, scroll the first one
-  if (scrollableElements.length > 0) {
-    const scrollElement = scrollableElements[0]; // Scroll the first found element
-    await page.evaluate((el) => {
-      el.scrollTop = el.scrollHeight;  // Scroll to the bottom of the element
-    }, scrollElement);
-  }
-
-  // Scroll to the specific target element
-  await element.scrollIntoViewIfNeeded();
-}

@@ -1,36 +1,41 @@
 import { Page } from '@playwright/test';
-import { BasePage } from './BasePage';
 
-export class AddRoomPage extends BasePage {
-constructor(page: Page) {
-    super(page);
+export class AddRoomPage {
+constructor(private readonly page: Page) {}
+
+  async fillRoomNumber(roomNumber: string): Promise<void> {
+    await this.page.fill('#roomName', roomNumber);
   }
 
-  async clickReportLink(): Promise<void> {
-    await this.page.getByRole('link', { name: 'Report' }).click();
+  async selectRoomType(type: string): Promise<void> {
+    await this.page.selectOption('#type', type);
   }
 
-  async clickNextLink(): Promise<void> {
-    await this.page.getByRole('link', { name: 'Next' }).click();
+  async selectAccessibility(option: string): Promise<void> {
+    await this.page.selectOption('#accessible', option);
   }
 
-  async clickTodayLink(): Promise<void> {
-    await this.page.getByRole('link', { name: 'Today' }).click();
+  async fillPrice(price: string): Promise<void> {
+    await this.page.fill('#roomPrice', price);
   }
 
-  async clickBackLink(): Promise<void> {
-    await this.page.getByRole('link', { name: 'Back' }).click();
+  async checkWiFi(): Promise<void> {
+    await this.page.check('#wifiCheckbox');
   }
 
-  async clickBrandingLink(): Promise<void> {
-    await this.page.getByRole('link', { name: 'Branding' }).click();
+  async checkTV(): Promise<void> {
+    await this.page.check('#tvCheckbox');
+  }
+
+  async checkViews(): Promise<void> {
+    await this.page.check('#viewsCheckbox');
+  }
+
+  async clickCreateButton(): Promise<void> {
+    await this.page.click('#createRoom');
   }
 
   async clickHomeLinkByText(linkText: string): Promise<void> {
     await this.page.getByRole('link', { name: linkText }).click();
-  }
-
-  async clickLogout(): Promise<void> {
-    await this.page.getByRole('link', { name: 'Logout' }).click();
   }
 }
