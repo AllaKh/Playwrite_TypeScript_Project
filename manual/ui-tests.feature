@@ -67,7 +67,7 @@ Feature: Web UI Manual Tests
     When I click on Book now button in the "Double" room section
     Then I should be redirected to the "Double" room booking page
     When I select available dates in the Book This Room modal
-    And I click on Reserve now button
+    And I click on Reserve Now button
     Then The credentials form modal should appear
     When I fill the credentials form with the valid data
     And I submit the form

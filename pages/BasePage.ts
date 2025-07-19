@@ -15,12 +15,17 @@ constructor(page: Page) {
     return await locator.isVisible();
   }
 
-  async scrollToElement(locator: Locator): Promise<void> {
-    const elementHandle = await locator.elementHandle();
-    if (elementHandle) {
-      await this.page.evaluate((el) => {
-        el.scrollIntoView({ behavior: 'auto', block: 'center', inline: 'center' });
-      }, elementHandle);
-    }
+  async scrollToBottom(): Promise<void> {
+    await this.page.evaluate(() => window.scrollBy(0, document.body.scrollHeight));
+  }
+
+  async scrollToTop(): Promise<void> {
+    await this.page.evaluate(() => window.scrollTo(0, 0));
+  }
+
+  async scrollToOneThird(): Promise<void> {
+    await this.page.evaluate(() => {
+      window.scrollBy(0, document.body.scrollHeight / 3);
+      });
   }
 }
