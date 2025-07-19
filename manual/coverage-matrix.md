@@ -58,6 +58,6 @@
 ## Strategy Summary
 
 - Prioritized booking functionality (API + UI)
-- Automated 3 API & 4 UI test cases
+- Automated 12 API & 4 UI test cases, but since the token cannot be received, only the health check passes in API tests and all other tests need to be updated after this critical bug will be fixed
 - Skipped tests requiring full auth token lifecycle or low business value
 - Bugs discovered during testing
