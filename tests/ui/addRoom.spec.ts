@@ -1,13 +1,15 @@
 import { test, expect } from '@playwright/test';
-import { HomePage } from '../../pages/HomePage';
-import { LoginPage } from '../../pages/LoginPage';
-import { AddRoomPage } from '../../pages/AddRoomPage';
+import { BasePage } from '../../pages/ui/BasePage';
+import { HomePage } from '../../pages/ui/HomePage';
+import { LoginPage } from '../../pages/ui/LoginPage';
+import { AddRoomPage } from '../../pages/ui/AddRoomPage';
 import { config } from '../../tests/config';
 
 test('Add a new valid room type and verify it is shown in Our Rooms section', async ({ page }) => {
   const homePage = new HomePage(page);
   const loginPage = new LoginPage(page);
   const adminDashboard = new AddRoomPage(page);
+  const basePage = new BasePage(page);
 
   // Given I am on the homepage
   await homePage.navigateToHome();
@@ -23,16 +25,16 @@ test('Add a new valid room type and verify it is shown in Our Rooms section', as
   await expect(page.locator('text=Rooms')).toBeVisible();
 
   // When I fill Room #
-  await adminDashboard.fillRoomNumber('202');
+  await adminDashboard.fillRoomNumber('104');
 
   // And I select Type from the drop-down list
-  await adminDashboard.selectRoomType('Double');
+  await adminDashboard.selectRoomType('Twin');
 
   // And I select Accessible = true from the drop-down list
   await adminDashboard.selectAccessibility('true');
 
   // And I fill the Price
-  await adminDashboard.fillPrice('150');
+  await adminDashboard.fillPrice('155');
 
   // And I check WiFi, TV, and Views radiobuttons
   await adminDashboard.checkWiFi();
@@ -50,8 +52,8 @@ test('Add a new valid room type and verify it is shown in Our Rooms section', as
   await frontPageLink.click();
 
   // Then I should be redirected to the homepage
-  await expect(page).toHaveURL('https://automationintesting.online/');
-  await expect(page.locator('text=Home')).toBeVisible();
+  await expect(page).toHaveURL(basePage.homepage);
+  await expect(page.locator('text=Home')).toBeVisible();;
 
   // And I scroll down to Our Rooms section
   await homePage.scrollToOurRoomsSection();

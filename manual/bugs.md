@@ -94,10 +94,10 @@
   2. Log in with username "admin" and password "password"
   3. Don't fill "Room #" field and click on "Create" button
   4. Fill "Room #" field with letters/special characters and click on "Create" button
-- Expected: Error message "Room # must be set" appears
+  5. Fill "Room #" field with existing room number and click on "Create" button
+- Expected: Error message "Room # must be unique" appears
   - and appropriate error message appears by attempt entering non-digital Room #
-- Actual: Error message "Room name must be set" appears instead
-  - Room # with non-digital value can be created
+- Actual: New room can be created in both cases without any error message
 - Impact: Confuses admin and causes wrong booking process functionality
 - Severity: Medium
 
@@ -122,7 +122,7 @@
 - Impact: Confuses users and needs additional translation
 - Severity: Low
 
-# BUG-0011 – Partial Phone validation
+# BUG-0010 – Partial Phone validation
 - Page: Send Us a Message/Book This Room forms
 - Steps:
   1. From homepage scroll to the Send Us a Message section

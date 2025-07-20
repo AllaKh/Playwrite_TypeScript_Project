@@ -1,39 +1,36 @@
 import { test, expect } from '@playwright/test';
-import { AuthApi } from '../../pages/AuthApi.js';
-import { config } from '../config.js';
+import { AuthApi } from '../../pages/api/AuthApi';
+import { config } from '../config';
 
 test.describe('Auth API Tests', () => {
   let authApi: AuthApi;
-  let token: string;
 
   test.beforeAll(async ({ request }) => {
     authApi = new AuthApi(request);
   });
 
-  test('Login returns 200 and token is present', async () => {
-    const response = await authApi.login(credentials.username, credentials.password);
-    expect(response.status()).toBe(200);
-    const body = await response.json();
-    expect(body).toHaveProperty('token');
-    token = body.token;
-  });
+  test('Full auth API flow: login, validate, logout, revalidate', async () => {
+    // Login
+    const loginResponse = await authApi.login(config.auth.username, config.auth.password);
+    expect(loginResponse.status()).toBe(200);
+    const loginBody = await loginResponse.json();
+    expect(loginBody).toHaveProperty('token');
+    const token = loginBody.token;
 
-  test('Validate token returns 200 and valid=true', async () => {
-    const response = await authApi.validateToken(token);
-    expect(response.status()).toBe(200);
-    const body = await response.json();
-    expect(body.valid).toBe(true);
-  });
+    // Validate token
+    const validateResponse = await authApi.validateToken(token);
+    expect(validateResponse.status()).toBe(200);
+    const validateBody = await validateResponse.json();
+    expect(validateBody.valid).toBe(true);
 
-  test('Logout returns 200', async () => {
-    const response = await authApi.logout();
-    expect(response.status()).toBe(200);
-  });
+    // Logout
+    const logoutResponse = await authApi.logout();
+    expect(logoutResponse.status()).toBe(200);
 
-  test('Validate token after logout returns 200 and valid=false', async () => {
-    const response = await authApi.validateToken(token);
-    expect(response.status()).toBe(200);
-    const body = await response.json();
-    expect(body.valid).toBe(false);
+    // Validate token again after logout
+    const postLogoutValidation = await authApi.validateToken(token);
+    expect(postLogoutValidation.status()).toBe(200);
+    const postLogoutBody = await postLogoutValidation.json();
+    expect(postLogoutBody.valid).toBe(false);
   });
 });

@@ -1,11 +1,12 @@
 import { test, expect } from '@playwright/test';
 import { format } from 'date-fns';
-import { HomePage } from '../../pages/HomePage';
-import { LoginPage } from '../../pages/LoginPage';
-import { AdminPage } from '../../pages/AdminPage';
-import { BookRoomPage } from '../../pages/BookRoomPage';
-import { MessagesPage } from '../../pages/MessagesPage';
-import { ReportPage } from '../../pages/ReportPage';
+import { BasePage } from '../../pages/ui/BasePage';
+import { HomePage } from '../../pages/ui/HomePage';
+import { LoginPage } from '../../pages/ui/LoginPage';
+import { AdminPage } from '../../pages/ui/AdminPage';
+import { BookRoomPage } from '../../pages/ui/BookRoomPage';
+import { MessagesPage } from '../../pages/ui/MessagesPage';
+import { ReportPage } from '../../pages/ui/ReportPage';
 import bookingData from '../../data/bookingPayloads.json' assert { type: 'json' };
 import { config } from '../config.js';
 
@@ -14,6 +15,7 @@ test('Book a double room with valid data', async ({ page }) => {
   const login = new LoginPage(page);
   const admin = new AdminPage(page);
   const book = new BookRoomPage(page);
+  const basePage = new BasePage(page);
 
   // Given I am on the homepage
   await home.navigateToHome();
@@ -32,11 +34,11 @@ test('Book a double room with valid data', async ({ page }) => {
   await homeLink.click();
 
   // Then I should be redirected to the homepage
-  if (await page.url() === 'https://automationintesting.online/admin/rooms') {
+  if (await page.url() === basePage.adminpage) {
     // Sometimes it remains on /admin/rooms, click again
     await homeLink.click();
   }
-  await expect(page).toHaveURL('https://automationintesting.online/');
+  await expect(page).toHaveURL(basePage.homepage);
   await expect(page.locator('text=Home')).toBeVisible();
 
   // Scroll down
@@ -134,12 +136,11 @@ test('Book a double room with valid data', async ({ page }) => {
   await expect(page.locator('#reportLink')).toBeVisible();
 
   // And I should see my booking in the report list
-const reportPage = new ReportPage(page);
-const bookingFullName = `${data.firstname} ${data.lastname}`;
-const checkInDay = new Date(formattedCheckIn).getDate();
+  const reportPage = new ReportPage(page);
+  const bookingFullName = `${data.firstname} ${data.lastname}`;
+  const checkInDay = new Date(formattedCheckIn).getDate();
 
-await reportPage.expectBookingEntry(bookingFullName, checkInDay);
-
+  await reportPage.expectBookingEntry(bookingFullName, checkInDay);
 
   // When I click on the Messages link to go to the Messages page
   const messagesLink = page.locator('text=Messages');
@@ -156,21 +157,19 @@ await reportPage.expectBookingEntry(bookingFullName, checkInDay);
   // Then I should be redirected to the Messages page
   await expect(page).toHaveURL(/\/admin\/message[s]?/);
 
-// And I should see the last message in the Name column matching my full name
-const fullName = `${data.firstname} ${data.lastname}`;
-const messagesPage = new MessagesPage(page);
+  // And I should see the last message in the Name column matching my full name
+  const fullName = `${data.firstname} ${data.lastname}`;
+  const messagesPage = new MessagesPage(page);
 
-// When I click on the message with my full name (last matching)
-await messagesPage.clickLastMessageByFullName(fullName);
+  // When I click on the message with my full name (last matching)
+  await messagesPage.clickLastMessageByFullName(fullName);
 
-// Then I should see message details with correct From: field
-await messagesPage.expectFromFieldToMatch(fullName);
+  // Then I should see message details with correct From: field
+  await messagesPage.expectFromFieldToMatch(fullName);
 
-// When I click on the Close button
-await messagesPage.closeMessageModal();
+  // When I click on the Close button
+  await messagesPage.closeMessageModal();
 
-// Then message details must be closed and message marked as read
-await messagesPage.expectMessageClosedAndMarkedRead(data.firstname);
-
-
+  // Then message details must be closed and message marked as read
+  await messagesPage.expectMessageClosedAndMarkedRead(data.firstname);
 });
