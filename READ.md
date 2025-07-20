@@ -3,7 +3,10 @@
 ## Overview
 
 This project demonstrates an automated and manual test suite for the demo application  
-[https://automationintesting.online](https://automationintesting.online)
+[https://automationintesting.online/](https://automationintesting.online)
+[https://automationintesting.online/auth/swagger-ui/index.html](https://automationintesting.online/auth/swagger-ui/index.html)
+[https://automationintesting.online/report/swagger-ui/index.html](https://automationintesting.online/report/swagger-ui/index.html)
+[https://automationintesting.online/room/swagger-ui/index.html](https://automationintesting.online/room/swagger-ui/index.html)
 
 It includes:
 - Manual test cases (API & UI) written in **Gherkin format**
