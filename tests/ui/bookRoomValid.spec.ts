@@ -7,7 +7,7 @@ import { AdminPage } from '../../pages/ui/AdminPage';
 import { BookRoomPage } from '../../pages/ui/BookRoomPage';
 import { MessagesPage } from '../../pages/ui/MessagesPage';
 import { ReportPage } from '../../pages/ui/ReportPage';
-import bookingData from '../../data/bookingPayloads.json' assert { type: 'json' };
+import bookingData from '../bookingPayloads.json' assert { type: 'json' };
 import { config } from '../config.js';
 
 test('Book a double room with valid data', async ({ page }) => {

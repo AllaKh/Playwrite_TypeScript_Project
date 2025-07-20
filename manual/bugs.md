@@ -1,7 +1,7 @@
 # Bugs
 
 ## BUG-001 – Login API fails with valid admin credentials
-- Endpoint: POST https://automationintesting.online/auth/swagger-ui/index.html
+- Endpoint: POST https://automationintesting.online/auth/swagger-ui/index.html#/auth-controller/createToken
 - Steps:
 - 1. Try to authenticate with Payload:
 - {
@@ -13,7 +13,52 @@
 - Impact: Admin cannot loging and create and update booking, get reports, create and update rooms
 - Severity: Critical
 
-## BUG-002 – Report - room details unavailable
+## BUG-002 – GET APIs fail with valid get request
+- Endpoint: GET Booking report: Get bookings by ID without token/Get room by ID without token/Get room by dates without token
+- https://automationintesting.online/report/swagger-ui/index.html#/report-controller/getSpecificRoomReport
+- https://automationintesting.online/room/swagger-ui/index.html#/room-controller/getRoom
+- https://automationintesting.online/room/swagger-ui/index.html#/room-controller/getRooms
+- Steps:
+- 1. Try to get rooms or bookings with APIs that don't require token
+- Expected: 200 Ok, receive room/rooms/booking details
+- Actual: 404
+- Impact: Admin cannot get reports and bookings
+- Severity: Critical
+
+## BUG-003 – POST & GET APIs in room and GET with token API in room-controller API don't have valid Title
+- Endpoint: POST & GET APIs in room and GET with token API in room-controller API
+- https://automationintesting.online/room/swagger-ui/index.html#/room-controller/createRoom
+- https://automationintesting.online/room/swagger-ui/index.html#/room-controller/getRooms
+- https://automationintesting.online/room/swagger-ui/index.html#/room-controller/getRoom
+- Steps:
+- 1. Open these APIs
+- Expected: Every API has unique clear Title
+- Actual: Titles are completely missing
+- Impact: Confuse Admin
+- Severity: Medium
+
+## BUG-004 – POST & PUT API in room - missing field validation
+- Endpoint: POST & PUT APIs in room
+- https://automationintesting.online/room/swagger-ui/index.html#/room-controller/createRoom
+- https://automationintesting.online/room/swagger-ui/index.html#/room-controller/updateRoom
+- Steps:
+- 1. Try to enter payload with missing ot unavailable data
+- Expected: Appropriate error message appears
+- Actual: POST and PUT can be executed without validation
+- Impact: Causes wrong booking process functionality 
+- Severity: High
+
+## BUG-005 – PUT API in room - missing Reset Button
+- Endpoint: PUT APIs in room
+- https://automationintesting.online/room/swagger-ui/index.html#/room-controller/updateRoom
+- Steps:
+- 1. POST API contains a Reset Button
+- Expected: PUT API containes the same Reset Button due the same functionality
+- Actual: Reset Button is missing
+- Impact: Causes admin mismatch
+- Severity: Low
+
+## BUG-006 – Report - room details unavailable
 - Page: Report
 - Steps:
   1. Go to homepage
@@ -28,24 +73,26 @@
   10. Submit the form
   11. Click on the Admin link
   12. Click on the Report link
-  13. Click on the booking record
-- Expected: Booking details are shown
-- Actual: Booking details are not displayed
+  13. Click on the appropriate booking record
+- Expected: I can see all dates for which the current booking made
+  - Booking details are shown by clicking on on the booking record
+- Actual: I can see only first date of the current booking
+  - Booking details are not displayed
 - Impact: Admin cannot view details of existing bookings
 - Severity: High
 
-## BUG-003 – Navigation Bar - number of messages doesn't match actual number of messages
+## BUG-007 – Navigation Bar - number of messages doesn't match actual number of messages
 - Page: Navigation Bar
 - Steps:
   1. From homepage click on the Admin link
   2. Log in with username "admin" and password "password"
   4. Click on the Messages link
 - Expected: Number of messages in the Navigation bar should be the same as actual number of messages
-- Actual: Number of messages in the Navigation bar always = 1 and doesn't match actual number of messages
+- Actual: Number of messages in the Navigation bar doesn't match actual number of messages
 - Impact: Confuse admin user
 - Severity: Low
 
-## BUG-004 – Reservation – app crashes on attempt to booking a room for unavailable dates
+## BUG-008 – Reservation – app crashes on attempt to booking a room for unavailable dates
 - Page: Report
 - Steps:
   1. From homepage scroll down to Our Rooms section
@@ -60,7 +107,7 @@
 - Impact: Users are unable to proceed with booking and entire frontend crashes
 - Severity: Critical
 
-## BUG-005 – Add a room with new valid type – new room doesn't appear in Our Rooms section and cannot be booking
+## BUG-009 – Add a room with new valid type – new room doesn't appear in Our Rooms section and cannot be booking
 - Page: Rooms
 - Steps:
   1. From homepage click on the Admin link
@@ -78,7 +125,7 @@
 - Impact: Users cannot book newly added rooms with previously non-existing type
 - Severity: High
 
-# BUG-006 – Homepage – Amenities link does not scroll to section
+# BUG-010 – Homepage – Amenities link does not scroll to section
 - Page: Homepage
 - Steps:
   1. From homepage click on the "Amenities" link in the navigation menu
@@ -87,7 +134,7 @@
 - Impact: Confuses users expecting to be taken directly to the Amenities section
 - Severity: Low
 
-# BUG-007 – Create new room – validation
+# BUG-011 – Create new room – fields validation
 - Page: Rooms
 - Steps:
   1. From homepage click on the Admin link
@@ -101,7 +148,7 @@
 - Impact: Confuses admin and causes wrong booking process functionality
 - Severity: Medium
 
-# BUG-008 – Update existing room
+# BUG-012 – Update existing room
 - Page: Rooms
 - Steps:
   1. From homepage click on the Admin link
@@ -113,7 +160,7 @@
 - Impact: Causes wrong booking process functionality
 - Severity: High
 
-# BUG-009 – Default room descriptions aren't in English
+# BUG-013 – Default room descriptions aren't in English
 - Page: Rooms/Our Rooms
 - Steps:
   1. From homepage scroll to the Our Rooms section
@@ -122,7 +169,7 @@
 - Impact: Confuses users and needs additional translation
 - Severity: Low
 
-# BUG-0010 – Partial Phone validation
+# BUG-014 – Partial Phone validation
 - Page: Send Us a Message/Book This Room forms
 - Steps:
   1. From homepage scroll to the Send Us a Message section
