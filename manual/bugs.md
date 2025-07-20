@@ -10,7 +10,7 @@
   }
 - Expected: 200 Ok, token received
 - Actual: 404
-- Impact: Admin cannot loging and create and update booking, get reports, create and update rooms
+- Impact: Admin cannot loging and get all reports, create and update rooms
 - Severity: Critical
 
 ## BUG-002 – GET APIs fail with valid get request
