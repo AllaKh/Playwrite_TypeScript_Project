@@ -8,7 +8,7 @@ readonly nextLink: Locator;
 readonly todayLink: Locator;
 readonly backLink: Locator;
 readonly brandingLink: Locator;
-readonly logoutButton: Locator;  // <-- исправлено имя с logoutLink на logoutButton
+readonly logoutButton: Locator;
 readonly messagesLink: Locator;
 readonly bookingList: Locator;
 readonly messageList: Locator;

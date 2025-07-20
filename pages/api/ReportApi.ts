@@ -1,29 +1,22 @@
 import { BaseApiClient } from './BaseApiClient';
 import { APIResponse } from '@playwright/test';
+import { apiPaths } from '../../tests/apiPaths';
 
 export class ReportApi extends BaseApiClient {
 
-// Get all reports without token (if no authentication is needed)
 getAllReports(): Promise<APIResponse> {
-    return this.get('/report');
+    return this.get(apiPaths.report.getAllBookings);
   }
 
-  // Get a specific report by room ID without token (if no authentication is needed)
   getReportByRoomId(id: number): Promise<APIResponse> {
-    return this.get(`/report/${id}`);
+    return this.get(`${apiPaths.report.getBookingByRoomId}/${id}`);
   }
 
-  // Get all reports with token authentication
   getReportsWithToken(token: string): Promise<APIResponse> {
-    return this.get('/report', {
-      'Authorization': `Bearer ${token}`,
-    });
+    return this.get(apiPaths.report.getAllBookings, { 'Authorization': `Bearer ${token}` });
   }
 
-  // Get a specific report by room ID with token authentication
   getReportByRoomIdWithToken(id: number, token: string): Promise<APIResponse> {
-    return this.get(`/report/${id}`, {
-      'Authorization': `Bearer ${token}`,
-    });
+    return this.get(`${apiPaths.report.getBookingByRoomId}/${id}`, { 'Authorization': `Bearer ${token}` });
   }
 }
