@@ -31,7 +31,7 @@ nmp install
 
 npx playwright test
 
-### Run Only API Tests
+### Run Only UI Tests
 
 npx playwright test tests/ui
 

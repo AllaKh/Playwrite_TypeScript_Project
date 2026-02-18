@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { format } from 'date-fns';
+// import { format } from 'date-fns';
 import { BasePage } from '../../pages/ui/BasePage';
 import { HomePage } from '../../pages/ui/HomePage';
 import { LoginPage } from '../../pages/ui/LoginPage';
@@ -64,23 +64,11 @@ test('Book a double room with valid data', async ({ page }) => {
   const bookingSection = page.locator('#root-container > div > div.container.my-5 > div > div.col-lg-4 > div > div > h2');
   await bookingSection.waitFor({ state: 'visible' });
 
-  // Generate random date offset between 0 and 9
-  const offset = Math.floor(Math.random() * 10);
-  const checkInDate = new Date();
-  checkInDate.setDate(checkInDate.getDate() + offset);
-
-  const checkOutDate = new Date(checkInDate);
-  checkOutDate.setDate(checkOutDate.getDate() + 1);
-
-  const URL_FMT = 'yyyy-MM-dd';
-  const formattedCheckIn = format(checkInDate, URL_FMT);
-  const formattedCheckOut = format(checkOutDate, URL_FMT);
-
-  const roomId = 3;
-  const bookingUrl = `https://automationintesting.online/reservation/${roomId}?checkin=${formattedCheckIn}&checkout=${formattedCheckOut}`;
+  // Generate current month dates from Page Object
+  const { checkIn, checkOut } = book.generateRandomDates();
 
   // Navigate directly with check-in and check-out via URL
-  await page.goto(bookingUrl);
+  // await page.goto(bookingUrl);
 
   // Scroll to reveal the sidebar if needed
   await home.scrollToOneThird();
@@ -138,7 +126,7 @@ test('Book a double room with valid data', async ({ page }) => {
   // And I should see my booking in the report list
   const reportPage = new ReportPage(page);
   const bookingFullName = `${data.firstname} ${data.lastname}`;
-  const checkInDay = new Date(formattedCheckIn).getDate();
+  const checkInDay = new Date(checkIn).getDate();
 
   await reportPage.expectBookingEntry(bookingFullName, checkInDay);
 

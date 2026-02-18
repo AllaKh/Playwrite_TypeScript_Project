@@ -1,4 +1,5 @@
 import { Page } from '@playwright/test';
+import { format } from 'date-fns';
 
 export class BookRoomPage {
 constructor(public page: Page) {}
@@ -16,6 +17,37 @@ constructor(public page: Page) {}
   get bookingConfirmation() { return this.page.locator('.booking-confirmation-modal'); }
   get validationError() { return this.page.locator('.validation-error'); }
 
+  /**
+   * ================= RANDOM DATES =================
+   * Same logic as Python:
+   * offset 0–9 days from today
+   * stay duration = 1 day
+   */
+  generateRandomDates(): { checkIn: string; checkOut: string } {
+    const offset = Math.floor(Math.random() * 10); // 0–9
+
+    const checkInDate = new Date();
+    checkInDate.setDate(checkInDate.getDate() + offset);
+
+    const checkOutDate = new Date(checkInDate);
+    checkOutDate.setDate(checkOutDate.getDate() + 1);
+
+    const DATE_FORMAT = 'yyyy-MM-dd';
+
+    return {
+      checkIn: format(checkInDate, DATE_FORMAT),
+      checkOut: format(checkOutDate, DATE_FORMAT),
+    };
+  }
+
+  /**
+   * Navigate directly to reservation URL with dates
+   */
+  async goToRoomWithDates(roomId: number, checkIn: string, checkOut: string) {
+    const url = `https://automationintesting.online/reservation/${roomId}?checkin=${checkIn}&checkout=${checkOut}`;
+    await this.page.goto(url);
+  }
+
   async selectDates(start: string, end: string) {
     await this.checkin.fill(start);
     await this.checkout.fill(end);
@@ -26,7 +58,13 @@ constructor(public page: Page) {}
     await this.reserveButton.click();
   }
 
-  async fillCredentials(data: { firstname: string; lastname: string; email: string; phone: string; depositpaid: boolean }) {
+  async fillCredentials(data: {
+    firstname: string;
+    lastname: string;
+    email: string;
+    phone: string;
+    depositpaid: boolean;
+  }) {
     await this.firstname.fill(data.firstname);
     await this.lastname.fill(data.lastname);
     await this.email.fill(data.email);
@@ -34,11 +72,7 @@ constructor(public page: Page) {}
 
     const isChecked = await this.deposit.isChecked();
     if (data.depositpaid !== isChecked) {
-      if (data.depositpaid) {
-        await this.deposit.check();
-      } else {
-        await this.deposit.uncheck();
-      }
+      data.depositpaid ? await this.deposit.check() : await this.deposit.uncheck();
     }
   }
 
