@@ -1,5 +1,4 @@
 import { test, expect } from '@playwright/test';
-// import { format } from 'date-fns';
 import { BasePage } from '../../pages/ui/BasePage';
 import { HomePage } from '../../pages/ui/HomePage';
 import { LoginPage } from '../../pages/ui/LoginPage';
@@ -10,7 +9,7 @@ import { ReportPage } from '../../pages/ui/ReportPage';
 import bookingData from '../bookingPayloads.json' assert { type: 'json' };
 import { config } from '../config.js';
 
-test('Book a double room with valid data', async ({ page }) => {
+test('Book a Suite room with valid data', async ({ page }) => {
   const home = new HomePage(page);
   const login = new LoginPage(page);
   const admin = new AdminPage(page);
@@ -41,19 +40,19 @@ test('Book a double room with valid data', async ({ page }) => {
   await expect(page).toHaveURL(basePage.homepage);
   await expect(page.locator('text=Home')).toBeVisible();
 
-  // Scroll down
+  // And I scroll down
   await home.scrollToOneThird();
 
-  // Wait for the heading to be visible
+  // And I wait for the heading to be visible
   const roomsHeading = page.locator('#rooms > div > div.row.g-4 > div:nth-child(3) > div > div.card-body > h5');
   await roomsHeading.waitFor({ state: 'visible' });
   await expect(roomsHeading).toBeVisible();
 
   // When I click on Book now button in the "Suite" room section
   const bookNowButton = page.locator('#rooms > div > div.row.g-4 > div:nth-child(3) > div > div.card-footer.bg-white.d-flex.justify-content-between.align-items-center > a');
-  await bookNowButton.click()
+  await bookNowButton.click();
 
-  // Scroll up
+  // And I scroll up
   await home.scrollToTop();
 
   // Then I should see the "Suite" Room details
@@ -64,13 +63,17 @@ test('Book a double room with valid data', async ({ page }) => {
   const bookingSection = page.locator('#root-container > div > div.container.my-5 > div > div.col-lg-4 > div > div > h2');
   await bookingSection.waitFor({ state: 'visible' });
 
-  // Generate current month dates from Page Object
+  // And I generate random dates from Page Object
   const { checkIn, checkOut } = book.generateRandomDates();
+  console.log("GENERATED:", checkIn, checkOut);
 
-  // Navigate directly with check-in and check-out via URL
-  // await page.goto(bookingUrl);
+  // And I navigate to the room page with these dates
+  await book.goToRoomWithDates(3, checkIn, checkOut);
 
-  // Scroll to reveal the sidebar if needed
+  // Wait a bit for reservation page to load
+  await page.waitForTimeout(1000);
+
+  // And I scroll to reveal the sidebar if needed
   await home.scrollToOneThird();
 
   // And I click on Reserve Now button
@@ -78,7 +81,7 @@ test('Book a double room with valid data', async ({ page }) => {
   await reserveNowButton.waitFor({ state: 'visible' });
   await reserveNowButton.click();
 
-  // Scroll up
+  // And I scroll up
   await home.scrollToTop();
 
   // Then the credentials form modal should appear
@@ -127,7 +130,6 @@ test('Book a double room with valid data', async ({ page }) => {
   const reportPage = new ReportPage(page);
   const bookingFullName = `${data.firstname} ${data.lastname}`;
   const checkInDay = new Date(checkIn).getDate();
-
   await reportPage.expectBookingEntry(bookingFullName, checkInDay);
 
   // When I click on the Messages link to go to the Messages page

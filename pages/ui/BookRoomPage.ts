@@ -18,8 +18,7 @@ constructor(public page: Page) {}
   get validationError() { return this.page.locator('.validation-error'); }
 
   /**
-   * ================= RANDOM DATES =================
-   * Same logic as Python:
+   * RANDOM DATES
    * offset 0–9 days from today
    * stay duration = 1 day
    */
