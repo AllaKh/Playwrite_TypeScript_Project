@@ -3,11 +3,12 @@
 ## Overview
 
 This project demonstrates an automated and manual test suite for the demo application using **Playwright** and **TypeScript**.
+```
 [https://automationintesting.online/](https://automationintesting.online)
 [https://automationintesting.online/auth/swagger-ui/index.html](https://automationintesting.online/auth/swagger-ui/index.html)
 [https://automationintesting.online/report/swagger-ui/index.html](https://automationintesting.online/report/swagger-ui/index.html)
 [https://automationintesting.online/room/swagger-ui/index.html](https://automationintesting.online/room/swagger-ui/index.html)
-
+```
 The tests cover:
 - Manual test cases (API & UI) written in **Gherkin format**
 - Automated API & UI tests using **Playwright** with **TypeScript**
